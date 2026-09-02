@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 const navItems = ['Projects', 'Skills', 'About', 'Contact']
@@ -69,6 +69,14 @@ const stack = [
 ]
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const loadingTimer = window.setTimeout(() => setIsLoading(false), 1500)
+
+    return () => window.clearTimeout(loadingTimer)
+  }, [])
+
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal-on-scroll')
 
@@ -95,7 +103,22 @@ function App() {
   }, [])
 
   return (
-    <div className="app-shell">
+    <>
+      {isLoading && (
+        <div className="loading-screen" role="status" aria-live="polite" aria-label="Loading portfolio">
+          <div className="loading-mark">&lt;/&gt;</div>
+          <div className="loading-copy">
+            <span>REHAN</span>
+            <span className="loading-accent">.DEV</span>
+          </div>
+          <div className="loading-track" aria-hidden="true">
+            <span />
+          </div>
+          <p>INITIALIZING EXPERIENCE</p>
+        </div>
+      )}
+
+      <div className="app-shell">
       <div className="background-orb orb-one" />
       <div className="background-orb orb-two" />
       <div className="background-orb orb-three" />
@@ -284,7 +307,8 @@ function App() {
           </div>
         </section>
       </main>
-    </div>
+      </div>
+    </>
   )
 }
 

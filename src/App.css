@@ -1,3 +1,91 @@
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1rem;
+  background: #020817;
+  color: #f8fafc;
+  animation: loadingExit 0.55s ease 0.9s forwards;
+}
+
+.loading-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(125, 211, 252, 0.5);
+  border-radius: 18px;
+  color: #7dd3fc;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1rem;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.3), inset 0 0 22px rgba(59, 130, 246, 0.14);
+  animation: loadingPulse 1.2s ease-in-out infinite;
+}
+
+.loading-copy {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.loading-accent {
+  color: #7dd3fc;
+}
+
+.loading-track {
+  width: 180px;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.loading-track span {
+  display: block;
+  width: 45%;
+  height: 100%;
+  background: #7dd3fc;
+  box-shadow: 0 0 14px rgba(125, 211, 252, 0.9);
+  animation: loadingProgress 1.05s ease-in-out infinite;
+}
+
+.loading-screen p {
+  margin: 0;
+  color: rgba(148, 163, 184, 0.72);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+}
+
+@keyframes loadingProgress {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(330%); }
+}
+
+@keyframes loadingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.82; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes loadingExit {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen,
+  .loading-mark,
+  .loading-track span {
+    animation: none;
+  }
+}
+
 .app-shell {
   position: relative;
   width: min(1400px, calc(100% - 28px));
