@@ -1,7 +1,32 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const navItems = ['Projects', 'Skills', 'About', 'Contact']
+const navItems = ['AI Builder', 'Projects', 'Skills', 'About', 'Contact']
+
+const starterHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generated landing page</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 2rem; color: #e2e8f0; background: #0f172a; font-family: system-ui, sans-serif; }
+      main { max-width: 620px; text-align: center; }
+      .tag { color: #67e8f9; font: 700 0.72rem/1 monospace; letter-spacing: .18em; text-transform: uppercase; }
+      h1 { margin: 1rem 0; color: #f8fafc; font-size: clamp(2.4rem, 8vw, 5rem); line-height: .95; }
+      p { color: #94a3b8; font-size: 1.1rem; line-height: 1.7; }
+      a { display: inline-block; margin-top: 1rem; padding: .85rem 1.2rem; border-radius: 10px; color: #082f49; background: #67e8f9; text-decoration: none; font-weight: 700; }
+    </style>
+  </head>
+  <body><main><span class="tag">AI generated concept</span><h1>Your next bold idea starts here.</h1><p>Describe a page in the prompt and Rehan's AI builder will shape the first draft for you.</p><a href="#start">Explore the idea</a></main></body>
+</html>`
+
+const promptStarters = [
+  'A launch page for a climate-tech startup',
+  'A portfolio for an experimental photographer',
+  'A waitlist page for a new music app',
+]
 
 const projects = [
   {
@@ -70,12 +95,59 @@ const stack = [
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
+  const [prompt, setPrompt] = useState('A bold landing page for a creative studio')
+  const [style, setStyle] = useState('Electric')
+  const [generatedHtml, setGeneratedHtml] = useState(starterHtml)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [generatedAt, setGeneratedAt] = useState('Starter concept loaded')
 
   useEffect(() => {
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 1500)
 
     return () => window.clearTimeout(loadingTimer)
   }, [])
+
+  const generateHtml = () => {
+    setIsGenerating(true)
+    window.setTimeout(() => {
+      const safePrompt = prompt.trim() || 'A polished landing page for a new digital product'
+      const palette = {
+        Electric: ['#67e8f9', '#2563eb', '#020617'],
+        Editorial: ['#fbbf24', '#b45309', '#1c1917'],
+        Soft: ['#86efac', '#15803d', '#052e16'],
+      }[style]
+      setGeneratedHtml(`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${safePrompt}</title>
+    <style>
+      * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 2rem; color: #f8fafc; background: radial-gradient(circle at 80% 10%, ${palette[1]}, transparent 35%), ${palette[2]}; font-family: system-ui, sans-serif; } main { max-width: 700px; } .tag { color: ${palette[0]}; font: 700 .72rem monospace; letter-spacing: .18em; text-transform: uppercase; } h1 { max-width: 12ch; margin: 1rem 0; font-size: clamp(2.8rem, 8vw, 6.4rem); line-height: .92; letter-spacing: -.06em; } p { max-width: 52ch; color: #cbd5e1; font-size: 1.12rem; line-height: 1.7; } a { display: inline-block; margin-top: 1.2rem; padding: .9rem 1.25rem; border-radius: 10px; color: ${palette[2]}; background: ${palette[0]}; text-decoration: none; font-weight: 800; }
+    </style>
+  </head>
+  <body><main><span class="tag">${style} direction / 01</span><h1>${safePrompt}</h1><p>A considered first draft with a clear point of view, responsive type, and one decisive call to action.</p><a href="#discover">See what's possible</a></main></body>
+</html>`)
+  setGeneratedAt(`Generated just now / ${style} direction`)
+      setIsGenerating(false)
+    }, 650)
+  }
+
+  const copyHtml = async () => {
+    await navigator.clipboard.writeText(generatedHtml)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1800)
+  }
+
+  const downloadHtml = () => {
+    const file = new Blob([generatedHtml], { type: 'text/html' })
+    const url = URL.createObjectURL(file)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'rehan-ai-draft.html'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
 
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal-on-scroll')
@@ -187,6 +259,49 @@ function App() {
                 <span className="tech-badge amber">Py</span>
                 <span className="tech-badge purple">Fi</span>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ai-builder" className="section-shell ai-builder-section reveal-on-scroll">
+          <div className="ai-builder-intro">
+            <p className="eyebrow">(AI HTML BUILDER)</p>
+            <h2>Give it a brief.<br /><span>Get a first draft.</span></h2>
+            <p>Describe what you want to make and let the builder turn the idea into clean, responsive HTML.</p>
+            <div className="ai-signal"><span className="status-dot" /> READY TO GENERATE</div>
+          </div>
+
+          <div className="ai-builder-workspace">
+            <div className="ai-controls">
+              <label htmlFor="ai-prompt">YOUR BRIEF</label>
+              <textarea id="ai-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="Describe the page you want to make..." />
+              <div className="prompt-starters">
+                <span>TRY A STARTER</span>
+                <div>
+                  {promptStarters.map((starter) => (
+                    <button key={starter} type="button" onClick={() => setPrompt(starter)}>{starter}</button>
+                  ))}
+                </div>
+              </div>
+              <div className="style-control">
+                <label>VISUAL DIRECTION</label>
+                <div className="style-options" role="group" aria-label="Visual direction">
+                  {['Electric', 'Editorial', 'Soft'].map((option) => (
+                    <button key={option} type="button" className={style === option ? 'style-option active' : 'style-option'} onClick={() => setStyle(option)}>{option}</button>
+                  ))}
+                </div>
+              </div>
+              <button type="button" className="generate-btn" onClick={generateHtml} disabled={isGenerating}>
+                {isGenerating ? 'BUILDING...' : 'GENERATE HTML'} <span aria-hidden="true">-&gt;</span>
+              </button>
+            </div>
+
+            <div className="ai-preview-wrap">
+              <div className="preview-toolbar">
+                <span><i /> LIVE PREVIEW <small>{generatedAt}</small></span>
+                <div><button type="button" onClick={copyHtml}>{copied ? 'COPIED' : 'COPY HTML'}</button><button type="button" onClick={downloadHtml}>DOWNLOAD</button></div>
+              </div>
+              <iframe title="Generated HTML preview" className="ai-preview" srcDoc={generatedHtml} />
             </div>
           </div>
         </section>
